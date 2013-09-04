@@ -1,18 +1,11 @@
 package org.kevoree.accesscontrol.pep;
 
 import org.kevoree.accesscontrol.*;
-import org.kevoree.compare.DefaultModelCompare;
-import org.kevoree.cloner.DefaultModelCloner;
-import org.kevoree.impl.DefaultKevoreeFactory;
-import org.kevoree.modeling.api.ModelCloner;
-import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.trace.ModelAddAllTrace;
 import org.kevoree.modeling.api.trace.*;
-import org.kevoree.accesscontrol.impl.DefaultAccessControlFactory;
-import org.kevoree.modeling.api.compare.ModelCompare;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.ListIterator;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,7 +39,7 @@ public class PEP{
         for (Rule rule : collectedRules)
         {
 
-            if ((rule.getSource().equals(resources_source))  && (rule.getTarget().equals(resources_target))  && (rule.getAction().equals(action)) )
+            if ((rule.getSource().equals(resources_source)) && (rule.getTarget().equals(resources_target))  && (rule.getAction().equals(action)) )
             {
 
                 list.add(rule.getEffect().toString()) ;
@@ -96,6 +89,7 @@ public class PEP{
 
                 ModelSetTrace settrace   =  (ModelSetTrace)trace;
                 String tempdecision  = ReturnTraceEffect("SetTrace", " ", settrace.getSrcPath(), acModel);
+                //System.out.println(tempdecision);
                 decisiontraces.add(tempdecision);
                 //System.out.println(settrace.getSrcPath());
                 //System.out.println(settrace.getRefName());
@@ -107,6 +101,7 @@ public class PEP{
                 System.out.println("AddTrace");
                 ModelAddTrace addtrace   =  (ModelAddTrace)trace;
                 String tempdecision  = ReturnTraceEffect("AddTrace", addtrace.getRefName(), addtrace.getPreviousPath(), acModel);
+                //System.out.println(tempdecision);
                 decisiontraces.add(tempdecision);
                // System.out.println(addtrace.getRefName());
                 //System.out.println(addtrace.getPreviousPath());
@@ -123,13 +118,17 @@ public class PEP{
                 decisiontraces.add(tempdecision);
                 //System.out.println(removetrace.getRefName());
                 //System.out.println(removetrace.getObjPath());
-                // System.out.println(removetrace.getSrcPath());
+                //System.out.println(removetrace.getSrcPath());
             }
+
+
 
             if (trace instanceof ModelRemoveAllTrace)
             {
                 System.out.println("ModelRemoveAllTrace");
             }
+
+
 
             if (trace instanceof ModelAddAllTrace)
             {
@@ -139,29 +138,36 @@ public class PEP{
         }
 
 
+
         while (decisiontraces.iterator().hasNext())
         {
             if( decisiontraces.iterator().next().equals("deny"))
             {
+                //System.out.println(decisiontraces.iterator().toString());
                 return deny;
             }
         }
+
 
         while (decisiontraces.iterator().hasNext())
         {
             if( decisiontraces.iterator().next().equals("postpone"))
             {
+                //System.out.println(decisiontraces.iterator().toString());
                 return postpone;
             }
         }
+
 
         while (decisiontraces.iterator().hasNext())
         {
             if( decisiontraces.iterator().next().equals("permit"))
             {
+                //System.out.println(decisiontraces.iterator().toString());
                 return permit;
             }
         }
+
         return nonapplicable;
     }
 
