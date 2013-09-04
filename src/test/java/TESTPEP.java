@@ -4,14 +4,14 @@ import org.kevoree.accesscontrol.*;
 import org.kevoree.accesscontrol.compare.DefaultModelCompare;
 import org.kevoree.accesscontrol.impl.DefaultAccessControlFactory;
 import org.kevoree.accesscontrol.pep.PEP;
-
-
 import org.kevoree.cloner.DefaultModelCloner;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.modeling.api.ModelCloner;
 import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.trace.ModelTrace;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -25,45 +25,39 @@ import java.util.List;
 public class TESTPEP {
 
     public static void main(String[] args) {
-    //TODO
+    //Policy example here
         AccessControlFactory factory = new DefaultAccessControlFactory();
         AccessControlPolicy modelAC = factory.createAccessControlPolicy();
         Domain myDomain = factory.createDomain();
         myDomain.setName("IaaSDomain");
         modelAC.addDomains(myDomain);
         Rule rule = factory.createRule();
-        rule.setName("1");
 
+        rule.setName("1");
         Subject subject = factory.createSubject();
         rule.setSubject(subject);
+        System.out.println("ggggggggggggggggg");
+        subject.setGenerated_KMF_ID("fsdfsd");
+        System.out.println(subject.getGenerated_KMF_ID().toString());
 
 
         Condition condition = factory.createCondition();
         rule.setCondition(condition);
 
+
         Action action = factory.createAction();
         rule.setAction(action);
 
-
-
-
-        List<Resource> listresourcesource = (List<Resource>) factory.createResource();
-        List<Resource> listresourcetarget = (List<Resource>) factory.createResource();
+        List<Resource> listresourcesource = Arrays.asList(factory.createResource());
+        List<Resource> listresourcetarget = Arrays.asList(factory.createResource());
         rule.setSource(listresourcesource);
         rule.setTarget(listresourcetarget);
 
 
 
-
-
-
-
-
-
-
+    //Model difference here
 
         PEP pep=new PEP();
-
         DefaultKevoreeFactory kevoreefactory = new DefaultKevoreeFactory();
         ModelCompare compare = new org.kevoree.compare.DefaultModelCompare();
         ModelCloner cloner = new DefaultModelCloner();
@@ -86,34 +80,22 @@ public class TESTPEP {
         model2.addNodes(node3);
 
 
-
-
         // model.removeNodes(node1);
-
       /*  List<Object> NodeList = model.selectByQuery("nodes[{ name = *node* }]");
         for (Object node: NodeList ) {
             model2.addNodes((ContainerNode)node);
         }
-
 
        List<Object> NodeList1 = model.selectByQuery("nodes[{ name = *node* }]");
         for (Object node: NodeList1 ) {
             model2.removeNodes((ContainerNode)node);
        }     */
 
-
         node1.setName("node10");
         traces = compare.diff(model2, model).getTraces();
+        System.out.println(traces);
         String finaldecision = pep.PDP(traces, modelAC);
         System.out.println(finaldecision) ;
-
-
-
-
-
     }
-
-
-
 
 }
